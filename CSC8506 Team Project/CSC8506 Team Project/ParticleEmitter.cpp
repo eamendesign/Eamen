@@ -16,7 +16,7 @@ enum TYPE{
 	SNOW, FIRE
 
 };
-ParticleEmitter::ParticleEmitter(void)	{
+ParticleEmitter::ParticleEmitter(int type)	{
 	
 	
 	/*
@@ -28,7 +28,7 @@ ParticleEmitter::ParticleEmitter(void)	{
 
 	addFire = 0; addSnow = 0;
 
-	int type = FIRE;
+	//type = FIRE;
 
 	switch (type)
 	{
@@ -38,14 +38,14 @@ ParticleEmitter::ParticleEmitter(void)	{
 
 		particleRate = 0.05f;
 		particleLifetime = 500.0f;
-		particleSize = frand(40.0f, 80.f);
+		particleSize = frand(40.f, 60.f);
 		particleVariance = 0.0f;
-		nextParticleTime = 500.0f;
+		nextParticleTime = 1000.0f;
 		particleSpeed = 0.1f;
 		numLaunchParticles = 1;
-		largestSize = 0;
+		largestSize = 10;
 		cameraDistance = Vector3(0, 0, 0);
-		rotation = Vector3(0, 0, 0);
+		rotation = Vector3(0, 1, 0);
 		addFire = 1;
 		break;
 	case SNOW:
@@ -58,12 +58,10 @@ ParticleEmitter::ParticleEmitter(void)	{
 		particleVariance = 0.08f;
 		nextParticleTime = 10.0f;
 		particleSpeed = 0.2f;
-		numLaunchParticles = 10;
-		largestSize = 0;
+		numLaunchParticles = 5;
+		largestSize = 10;
 		addSnow = 1;
 		break;
-
-
 
 	}
 
@@ -94,6 +92,10 @@ it is removed from the particle list. If it's time to generate some new particle
 that in here, too. Finally, this function resizes our VBOs if necessary.
 */
 void ParticleEmitter::Update(float msec)	{
+
+
+	
+
 	nextParticleTime -= msec;	//some time has passed!
 
 	/*
@@ -118,7 +120,7 @@ void ParticleEmitter::Update(float msec)	{
 		//This means it'll also fade out as it loses energy. Kinda cool?
 
 		if (addFire)
-		p->colour.w -= (msec * 20 / particleLifetime);
+		p->colour.w -= (msec * 2 / particleLifetime);
 
 		if (addSnow)
 		p->colour.w -= (msec  / particleLifetime);
@@ -151,21 +153,21 @@ void ParticleEmitter::Update(float msec)	{
 
 	//If we now have more particles than we have graphics memory for, we
 	//must allocate some new space for them, using ResizeArrays.
-	if (particles.size() > largestSize) {
+	if (particles.size() > largestSize || !vertices || !colours) {
 		ResizeArrays();
 	}
 
 	//cout << cameraDistance << endl;
 
-	/*for (unsigned int i = 0; i < particles.size(); ++i) {
+	for (unsigned int i = 0; i < particles.size(); ++i) {
 
 		Vector3 dir = particles[i]->position - cameraDistance;
 		particles[i]->distanceFromCamera = Vector3::Dot(dir, dir);
 
-	}*/
+	}
 
 
-	//std::sort(particles.begin(), particles.end(), ParticleEmitter::SortParticles);
+	std::sort(particles.begin(), particles.end(), ParticleEmitter::SortParticles);
 
 }
 
@@ -196,6 +198,7 @@ Particle* ParticleEmitter::GetFreeParticle()	{
 		p->direction.x += frand(-1, 1);
 		p->direction.y += frand(3, 7);
 		p->direction.z += frand(-1, 1);
+		//p->position = Vector3(0, 0, 0);
 	}
 
 	int a;
@@ -207,12 +210,14 @@ Particle* ParticleEmitter::GetFreeParticle()	{
 		p->direction.x += ((RAND() - RAND()) * particleVariance);
 		p->direction.y += ((RAND() - RAND()) * particleVariance);
 		p->direction.z += ((RAND() - RAND()) * particleVariance);
+		//p->position = Vector3(0, 0, 0);
 	}
 
 
+	p->position = Vector3(0,-100,0);
 
 	p->direction.Normalise();	//Keep its direction normalised!
-	p->position.ToZero();
+	//p->position.ToZero();
 
 	return p;	//return the new particle :-)
 }

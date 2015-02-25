@@ -28,7 +28,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	bool addRain = 0;
 	for (int i = 0; i<4; i++)
 	{
-		emitter.push_back(new ParticleEmitter());
+		emitter.push_back(new ParticleEmitter(1));
 	}
 
 	//simpleShader	= new Shader(SHADERDIR"TechVertex.glsl", SHADERDIR"TechFragment.glsl");
@@ -108,6 +108,10 @@ void Renderer::RenderScene()	{
 	if(camera) {
 		
 
+	
+		
+		
+
 		viewMatrix = camera->BuildViewMatrix();
 		projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
 	
@@ -179,13 +183,15 @@ void Renderer::RenderScene()	{
 		DrawText(ss.str(), Vector3(0, 96.0f, 0), 16.0f);
 		ss.clear(); ss.str(std::string());
 
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		projMatrix = Matrix4::Perspective(1.0f, 10000.0f, (float)width / (float)height, 45.0f);
 		viewMatrix = camera->BuildViewMatrix();
 
-		//glDisable(GL_BLEND);
 		drawEmitter_1();
+
+		//glDisable(GL_BLEND);
+		
 		//drawEmitter_2();
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -321,18 +327,20 @@ void Renderer::drawEmitter_1()
 	//emitter[0]->SetParticleSize(18.0f);
 	//emitter[0]->SetParticleVariance(1.0f);
 	//emitter[0]->SetLaunchParticles(16.0f);
-	emitter[0]->SetParticleLifetime(20000.0f);
+	//emitter[0]->SetTpye(0);
+	emitter[0]->SetParticleLifetime(2000.0f);
 	
 	//emitter[0]->SetParticleSpeed(0.05f);
 
 	modelMatrix =
 		Matrix4::Translation(Vector3(2000, 1000, 2000)) *
-		Matrix4::Scale(Vector3(10, 10, 10)) *
+		Matrix4::Scale(Vector3(5, 10, 5)) *
 		Matrix4::Rotation(0, Vector3(1.0f, 0.0f, 0.0f));
 
 	UpdateShaderMatrices();
-
+	
 	emitter[0]->Draw();
+	
 
 	glUseProgram(0);
 }
@@ -349,16 +357,18 @@ void Renderer::drawEmitter_2()
 	glUseProgram(currentShader->GetProgram());
 	glUniform1i(glGetUniformLocation(currentShader->GetProgram(), "diffuseTex"), 0);
 	SetShaderParticleSize(emitter[1]->GetParticleSize());
-	emitter[1]->SetParticleLifetime(20000.0f);
+	emitter[1]->SetParticleLifetime(2.0f);
 	emitter[1]->SetFire(0);
 	emitter[1]->SetSnow(1);
 
 	modelMatrix =
 		Matrix4::Translation(Vector3(2000, 4000, 2000)) *
-		Matrix4::Scale(Vector3(10, 10, 10)) *
+		Matrix4::Scale(Vector3(5, 10, 10)) *
 		Matrix4::Rotation(0, Vector3(1.0f, 0.0f, 0.0f));
 
 	UpdateShaderMatrices();
+	
+	
 
 	emitter[1]->Draw();
 

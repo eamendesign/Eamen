@@ -23,7 +23,7 @@ _-_-_-_-_-_-_-""  ""
 
 //A handy enumerator, to determine which member of the bufferObject array
 //holds which data
-enum MeshBuffer {
+enum  MeshBuffer {
 	VERTEX_BUFFER	,
 	COLOUR_BUFFER	, 
 	TEXTURE_BUFFER	,

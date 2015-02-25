@@ -61,7 +61,7 @@ struct Particle {
 
 class ParticleEmitter : public Mesh	{
 public:
-	ParticleEmitter(void);
+	ParticleEmitter(int type);
 	~ParticleEmitter(void);
 
 
@@ -124,6 +124,8 @@ public:
 	void SetFire(bool a) { addFire = a; }
 	void SetSnow(bool a) { addSnow = a; }
 
+	void SetTpye(int t){ type = t; }
+
 protected:
 	/*
 	This is the magic of our free list. If there's a particle 'spare',
@@ -166,5 +168,9 @@ protected:
 
 	Vector3 rotation;
 	bool addFire; bool addSnow;
+
+
+
+	int type;
 };
 
